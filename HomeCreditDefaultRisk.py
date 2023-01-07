@@ -22,15 +22,12 @@ def load_data():
 
 df = load_data()
 
-
-
 X = df.drop(columns=["SK_ID_CURR"])
 
 modele = load(r"modele.joblib")
 
 feature_importances=modele.feature_importances_
 attributes=list(X.columns)
-
 feat=pd.DataFrame(feature_importances)
 att=pd.DataFrame(attributes)
 feat_att=pd.concat([feat,att],axis=1)
@@ -45,8 +42,9 @@ prediction= TARGET
 
 df1 = pd.DataFrame(proba,columns=['Proba'])
 df2 = pd.DataFrame(prediction,columns=['TARGET'])
-
 df3 = pd.concat([df1,df2,df["SK_ID_CURR"]],axis=1)
+
+
 
 Clients=st.sidebar.selectbox("Choisissez le client",df3['SK_ID_CURR'])
 
@@ -59,13 +57,30 @@ conditionlist = [
 choicelist = ["Solvable","Non Solvable"]
 df3['Décision'] = np.select(conditionlist, choicelist)
 
+df3["Score"] = 100 - 100 * df3["Proba"]
+
+
+index = st.sidebar.selectbox("Choisissez l'index",X.index)
+
 c1,c2=st.columns(2)
 with c1:
     st.write("Décision")
     st.dataframe(df3[df3["SK_ID_CURR"]==Clients][['Décision']].style.background_gradient(cmap='Reds'))
 with c2:
-    st.write("Probabilité")
-    st.dataframe((df3[df3["SK_ID_CURR"]==Clients][['Proba']]).style.background_gradient(cmap='Reds'))
+    st.write("Scoring")
+    fig = go.Figure(go.Indicator(
+        domain={'x': [0, 1], 'y': [0, 1]},
+        value= int(np.rint(df3[df3["SK_ID_CURR"]==Clients]['Score'])),
+        mode="gauge+number+delta",
+        title={'text': f"Score du client"},
+        delta={'reference': 90},
+        gauge={'axis': {'range': [None, 100]},
+               'steps': [
+                   {'range': [0, 90], 'color': "lightgray"},
+                   {'range': [90, 100], 'color': "gray"}],
+               'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
+    st.plotly_chart(fig,use_container_width=False)
+
 
 
 
@@ -74,6 +89,8 @@ def load_data_1():
    data= pd.read_csv(r"appl_test.csv")
    return data
 df10=load_data_1()
+
+
 
 df10["Age"] = -(df10["DAYS_BIRTH"]/365)
 
@@ -116,19 +133,35 @@ if check1:
 check2=st.sidebar.checkbox("Histogramme des features")
 
 if check2:
-    options = st.selectbox(
+    options1 = st.selectbox(
         'Choisissez votre feature',
         list(df10.columns))
 
-    figure1 = px.histogram(df10,x=options,nbins=25)
+    figure1 = px.histogram(df10,x=options1,nbins=25)
     st.plotly_chart(figure1,use_container_width=True)
+
+check3 = st.sidebar.checkbox("Analyse bivariée")
+
+if check3:
+    options2 = st.selectbox(
+        'Choisissez votre feature',
+        list(df10.columns))
+    options3 = st.selectbox(
+        'Choisissez votre feature',
+        list(df10[["Ancienneté dans emploi", "Montant_crédit",
+                   "Age", "Annuités", "Montant_bien", "Total des Revenus"]].columns))
+
+    figure2 = px.scatter(df10, x=options2 , y= options3)
+    st.plotly_chart(figure2,theme="streamlit", use_container_width=True)
+
+
 
 
 
 figure4=px.bar(feat_att_1,x='valeur',y="attributes")
 figure3=px.pie(df3,names="TARGET")
 
-index = st.sidebar.selectbox("Choisissez l'index",X.index)
+
 
 lime2 = LimeTabularExplainer(X,
                              feature_names=X.columns,

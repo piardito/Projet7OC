@@ -80,12 +80,16 @@ df10["Nbre_enfants"] = df10["CNT_CHILDREN"]
 
 df10["Total des Revenus"] = df10["AMT_INCOME_TOTAL"]
 
+df10["Statut_familial"] = df10["NAME_FAMILY_STATUS"]
+
+df10["Sexe"] = df10["CODE_GENDER"]
+
 st.subheader("Informations sur le client")
 
-st.table(df10[df10["SK_ID_CURR"]==Clients][["Ancienneté dans emploi","Montant_crédit",
+st.table(df10[df10["SK_ID_CURR"]==Clients][["Sexe","Ancienneté dans emploi","Montant_crédit",
 "Age","Annuités","Montant_bien","Total des Revenus"]])
 
-st.table(df10[df10["SK_ID_CURR"]==Clients][["NAME_HOUSING_TYPE","NAME_EDUCATION_TYPE",
+st.table(df10[df10["SK_ID_CURR"]==Clients][["Statut_familial","NAME_HOUSING_TYPE","NAME_EDUCATION_TYPE",
                                                 "NAME_CONTRACT_TYPE","NAME_INCOME_TYPE","Nbre_enfants"]])
 
 st.subheader("Graphiques")

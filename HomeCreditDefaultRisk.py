@@ -5,6 +5,7 @@ from joblib import load
 from lime.lime_tabular import LimeTabularExplainer
 import plotly.express as px
 import streamlit.components.v1 as components
+import plotly.graph_objects as go
 
 
 st.set_page_config(layout="wide")
@@ -51,13 +52,21 @@ Clients=st.sidebar.selectbox("Choisissez le client",df3['SK_ID_CURR'])
 
 st.write("Client numéro : ", Clients)
 
-c1,c2,c3=st.columns(3)
+conditionlist = [
+    df3["TARGET"]==0,
+    df3["TARGET"]==1
+    ]
+choicelist = ["Solvable","Non Solvable"]
+df3['Décision'] = np.select(conditionlist, choicelist)
+
+c1,c2=st.columns(2)
 with c1:
-    st.write("Score")
-    st.dataframe(df3[df3["SK_ID_CURR"]==Clients][['TARGET']].style.background_gradient(cmap='Reds'))
+    st.write("Décision")
+    st.dataframe(df3[df3["SK_ID_CURR"]==Clients][['Décision']].style.background_gradient(cmap='Reds'))
 with c2:
     st.write("Probabilité")
-    st.dataframe(df3[df3["SK_ID_CURR"]==Clients][['Proba']].style.background_gradient(cmap='Reds'))
+    st.dataframe((df3[df3["SK_ID_CURR"]==Clients][['Proba']]).style.background_gradient(cmap='Reds'))
+
 
 
 @st.cache(allow_output_mutation=True,persist=True)
@@ -143,7 +152,6 @@ with col_2:
 with col_3:
     html = exp1.as_html(show_table=True)
     components.html(html, height=1000)
-
 
 
 

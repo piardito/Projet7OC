@@ -48,7 +48,6 @@ df3 = pd.concat([df1,df2,df["SK_ID_CURR"]],axis=1)
 
 Clients=st.sidebar.selectbox("Choisissez le client",df3["SK_ID_CURR"])
 
-st.write("Client numéro : ", Clients)
 
 conditionlist = [
     df3["TARGET"]==0,
@@ -73,13 +72,13 @@ with c2:
         domain={'x': [0, 1], 'y': [0, 1]},
         value= int(np.rint(df3[df3["SK_ID_CURR"]==Clients]['Score'])),
         mode="gauge+number+delta",
-        title={'text': f"Score du client"},
+        title={'text': f"Score du client {Clients}"},
         delta={'reference': 100*(1-seuil) },
         gauge={'axis': {'range': [None, 100]},
                'steps': [
                    {'range': [0, 100*(1-seuil)], 'color': "lightgray"},
                    {'range': [100*(1-seuil), 100], 'color': "gray"}],
-               'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
+               'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 100*(1-seuil) }}))
     st.plotly_chart(fig,use_container_width=False)
 
 

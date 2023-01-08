@@ -8,6 +8,7 @@ import streamlit.components.v1 as components
 import plotly.graph_objects as go
 
 
+
 st.set_page_config(layout="wide")
 
 st.title('Credit Scoring')
@@ -22,12 +23,11 @@ def load_data():
 
 df = load_data()
 
-X = df.drop(columns=["SK_ID_CURR"])
-
 modele = load(r"modele.joblib")
 
+
 feature_importances=modele.feature_importances_
-attributes=list(X.columns)
+attributes=list(df.set_index("SK_ID_CURR").columns)
 feat=pd.DataFrame(feature_importances)
 att=pd.DataFrame(attributes)
 feat_att=pd.concat([feat,att],axis=1)
@@ -35,7 +35,7 @@ feat_att.columns=['valeur','attributes']
 feat_att=feat_att.sort_values(by="valeur",ascending=False)
 feat_att_1=feat_att[:10]
 
-proba=modele.predict_proba(X)[:,1]
+proba=modele.predict_proba(df.set_index("SK_ID_CURR"))[:,1]
 seuil=st.slider("Choisissez le seuil",0.1,0.5,0.1)
 TARGET= np.where(proba > seuil, 1, 0)
 prediction= TARGET
@@ -46,7 +46,7 @@ df3 = pd.concat([df1,df2,df["SK_ID_CURR"]],axis=1)
 
 
 
-Clients=st.sidebar.selectbox("Choisissez le client",df3['SK_ID_CURR'])
+Clients=st.sidebar.selectbox("Choisissez le client",df3["SK_ID_CURR"])
 
 st.write("Client numéro : ", Clients)
 
@@ -60,12 +60,13 @@ df3['Décision'] = np.select(conditionlist, choicelist)
 df3["Score"] = 100 - 100 * df3["Proba"]
 
 
-index = st.sidebar.selectbox("Choisissez l'index",X.index)
 
 c1,c2=st.columns(2)
 with c1:
     st.write("Décision")
-    st.dataframe(df3[df3["SK_ID_CURR"]==Clients][['Décision']].style.background_gradient(cmap='Reds'))
+    st.table(df3[df3["SK_ID_CURR"]==Clients][['Décision']].style.set_properties(**{'background-color': 'blue','color': 'yellow'}))
+
+
 with c2:
     st.write("Scoring")
     fig = go.Figure(go.Indicator(
@@ -73,11 +74,11 @@ with c2:
         value= int(np.rint(df3[df3["SK_ID_CURR"]==Clients]['Score'])),
         mode="gauge+number+delta",
         title={'text': f"Score du client"},
-        delta={'reference': 90},
+        delta={'reference': 100*(1-seuil) },
         gauge={'axis': {'range': [None, 100]},
                'steps': [
-                   {'range': [0, 90], 'color': "lightgray"},
-                   {'range': [90, 100], 'color': "gray"}],
+                   {'range': [0, 100*(1-seuil)], 'color': "lightgray"},
+                   {'range': [100*(1-seuil), 100], 'color': "gray"}],
                'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
     st.plotly_chart(fig,use_container_width=False)
 
@@ -112,11 +113,13 @@ df10["Sexe"] = df10["CODE_GENDER"]
 
 st.subheader("Informations sur le client")
 
-st.table(df10[df10["SK_ID_CURR"]==Clients][["Sexe","Ancienneté dans emploi","Montant_crédit",
-"Age","Annuités","Montant_bien","Total des Revenus"]])
+
+
+st.table(df10[df10["SK_ID_CURR"]==Clients][["Sexe","Ancienneté dans emploi","Montant_crédit","Age",
+"Annuités","Montant_bien","Total des Revenus"]].style.set_properties(**{'background-color': 'cyan','color': 'black'}))
 
 st.table(df10[df10["SK_ID_CURR"]==Clients][["Statut_familial","NAME_HOUSING_TYPE","NAME_EDUCATION_TYPE",
-                                                "NAME_CONTRACT_TYPE","NAME_INCOME_TYPE","Nbre_enfants"]])
+"NAME_CONTRACT_TYPE","NAME_INCOME_TYPE","Nbre_enfants"]].style.set_properties(**{'background-color': 'cyan','color': 'black'}))
 
 st.subheader("Graphiques")
 
@@ -159,17 +162,17 @@ if check3:
 
 
 figure4=px.bar(feat_att_1,x='valeur',y="attributes")
-figure3=px.pie(df3,names="TARGET")
+figure3=px.pie(df3,names="Décision")
 
 
 
-lime2 = LimeTabularExplainer(X,
-                             feature_names=X.columns,
+lime2 = LimeTabularExplainer(df.set_index("SK_ID_CURR"),
+                             feature_names=df.set_index("SK_ID_CURR").columns,
                              class_names=["Solvable", "Non Solvable"],
                              discretize_continuous=False)
 
 
-exp1 = lime2.explain_instance(X.iloc[index],
+exp1 = lime2.explain_instance(df.set_index("SK_ID_CURR").loc[Clients],
                               modele.predict_proba,
                               num_samples=100)
 
@@ -185,6 +188,8 @@ with col_2:
 with col_3:
     html = exp1.as_html(show_table=True)
     components.html(html, height=1000)
+
+
 
 
 

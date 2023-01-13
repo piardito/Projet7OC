@@ -153,7 +153,7 @@ if check3:
         list(df10[["Ancienneté dans emploi", "Montant_crédit",
                    "Age", "Annuités", "Montant_bien", "Total des Revenus"]].columns))
 
-    figure2 = px.scatter(df10, x=options2 , y= options3)
+    figure2 = px.scatter(df10, x=options2 , y= options3 )
     st.plotly_chart(figure2,theme="streamlit", use_container_width=True)
 
 
@@ -161,6 +161,7 @@ if check3:
 
 
 figure4=px.bar(feat_att_1,x='valeur',y="attributes")
+
 figure3=px.pie(df3,names="Décision")
 
 

@@ -18,9 +18,9 @@ st.markdown(" :money_with_wings: ",
             unsafe_allow_html=True)
 
 
-r = requests.get("http://127.0.0.1:5000/id_sk" )
-results = json.loads(r.content)
-df_api = pd.DataFrame(results['data'].items(), columns=['index', 'id_client'])
+#r = requests.get("http://127.0.0.1:5000/id_sk")
+#results = json.loads(r.content)
+#df_api = pd.DataFrame(results['data'].items(), columns=['index', 'id_client'])
 
 
 
@@ -54,7 +54,7 @@ df3 = pd.concat([df1,df2,df["SK_ID_CURR"]],axis=1)
 
 
 
-Clients=st.sidebar.selectbox("Choisissez le client",df_api["id_client"])
+Clients=st.sidebar.selectbox("Choisissez le client",df3["SK_ID_CURR"])
 
 
 conditionlist = [

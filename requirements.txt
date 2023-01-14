@@ -6,6 +6,7 @@ streamlit
 joblib
 lime
 lightgbm
+requests
 
 
 

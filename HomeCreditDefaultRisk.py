@@ -18,9 +18,9 @@ st.markdown(" :money_with_wings: ",
             unsafe_allow_html=True)
 
 
-r = requests.get("http://127.0.0.1:5000/id_sk")
-results = json.loads(r.content)
-df_api = pd.DataFrame(results['data'].items(), columns=['index', 'id_client'])
+#r = requests.get("http://127.0.0.1:5000/id_sk")
+#results = json.loads(r.content)
+#df_api = pd.DataFrame(results['data'].items(), columns=['index', 'id_client'])
 
 print(df_api['id_client'])
 

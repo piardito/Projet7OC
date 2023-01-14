@@ -22,7 +22,7 @@ st.markdown(" :money_with_wings: ",
 #results = json.loads(r.content)
 #df_api = pd.DataFrame(results['data'].items(), columns=['index', 'id_client'])
 
-print(df_api['id_client'])
+#print(df_api['id_client'])
 
 
 @st.cache(allow_output_mutation=True,persist=True)

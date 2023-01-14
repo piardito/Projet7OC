@@ -54,7 +54,7 @@ df2 = pd.DataFrame(prediction,columns=['TARGET'])
 df3 = pd.concat([df1,df2,df["SK_ID_CURR"]],axis=1)
 
 
-Clients=st.sidebar.selectbox("Choisissez le client",df_api["id_client"])
+Clients=st.sidebar.selectbox("Choisissez le client",df3["SK_ID_CURR"])
 
 
 conditionlist = [

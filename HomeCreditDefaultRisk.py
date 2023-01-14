@@ -6,7 +6,8 @@ from lime.lime_tabular import LimeTabularExplainer
 import plotly.express as px
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
-
+import requests
+import json
 
 
 st.set_page_config(layout="wide")
@@ -15,6 +16,13 @@ st.title('Credit Scoring')
 
 st.markdown(" :money_with_wings: ",
             unsafe_allow_html=True)
+
+
+r = requests.get("http://127.0.0.1:5000/id_sk" )
+results = json.loads(r.content)
+df_api = pd.DataFrame(results['data'].items(), columns=['index', 'id_client'])
+
+
 
 @st.cache(allow_output_mutation=True,persist=True)
 def load_data():
@@ -46,7 +54,7 @@ df3 = pd.concat([df1,df2,df["SK_ID_CURR"]],axis=1)
 
 
 
-Clients=st.sidebar.selectbox("Choisissez le client",df3["SK_ID_CURR"])
+Clients=st.sidebar.selectbox("Choisissez le client",df_api["id_client"])
 
 
 conditionlist = [

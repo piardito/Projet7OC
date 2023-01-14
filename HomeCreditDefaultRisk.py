@@ -11,6 +11,7 @@ import json
 
 
 
+
 st.set_page_config(layout="wide")
 
 st.title('Credit Scoring')

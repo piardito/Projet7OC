@@ -6,8 +6,8 @@ from lime.lime_tabular import LimeTabularExplainer
 import plotly.express as px
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
-import requests
-import json
+#import requests
+#import json
 
 
 
@@ -18,12 +18,12 @@ st.title('Credit Scoring')
 st.markdown(" :money_with_wings: ",
             unsafe_allow_html=True)
 
-def score(sk_id) :
-    g=requests.get("http://127.0.0.1:5000/" + "score/?SK_ID_CURR=" + str(sk_id))
-    resultat =json.loads(g.content)
-    df_api = pd.DataFrame(resultat.items()).set_index(0).T
-    df_api.set_index("SK_ID_CURR",inplace=True)
-    return(df_api.loc[str(sk_id)])
+#def score(sk_id) :
+    #g=requests.get("http://127.0.0.1:5000/" + "score/?SK_ID_CURR=" + str(sk_id))
+    #resultat =json.loads(g.content)
+    #df_api = pd.DataFrame(resultat.items()).set_index(0).T
+    #df_api.set_index("SK_ID_CURR",inplace=True)
+    #return(df_api.loc[str(sk_id)])
 
 
 
@@ -80,8 +80,8 @@ with c2:
     st.write("Scoring")
     fig = go.Figure(go.Indicator(
         domain={'x': [0, 1], 'y': [0, 1]},
-        #value= int(np.rint(df3[df3["SK_ID_CURR"]==Clients]['Score'])),
-        value=float(score(Clients)),
+        value= int(np.rint(df3[df3["SK_ID_CURR"]==Clients]['Score'])),
+        #value=float(score(Clients)),
         mode="gauge+number+delta",
         title={'text': f"Score du client {Clients}"},
         delta={'reference': 100*(1-seuil) },

@@ -9,6 +9,12 @@ import plotly.graph_objects as go
 import requests
 import json
 
+headers={
+
+    "authorization":st.secrets("auth_key"),
+    "content_type": "application/json"
+}
+
 st.set_page_config(layout="wide")
 
 st.title('Credit Scoring')

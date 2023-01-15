@@ -27,7 +27,7 @@ st.markdown(" :money_with_wings: ",
 
 
 
-
+@st.cache(allow_output_mutation=True)
 def load_data():
   df = pd.read_csv(r"appl_test_tr.csv")
   return df
@@ -96,7 +96,7 @@ with c2:
 
 
 
-
+@st.cache(allow_output_mutation=True)
 def load_data_1():
    data= pd.read_csv(r"appl_test.csv")
    return data

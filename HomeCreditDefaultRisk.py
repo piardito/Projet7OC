@@ -6,8 +6,8 @@ from lime.lime_tabular import LimeTabularExplainer
 import plotly.express as px
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
-#import requests
-#import json
+import requests
+import json
 
 
 
@@ -18,12 +18,12 @@ st.title('Credit Scoring')
 st.markdown(" :money_with_wings: ",
             unsafe_allow_html=True)
 
-#def score(sk_id) :
-    #g=requests.get("http://127.0.0.1:5000/" + "score/?SK_ID_CURR=" + str(sk_id))
-    #resultat =json.loads(g.content)
-    #df_api = pd.DataFrame(resultat.items()).set_index(0).T
-    #df_api.set_index("SK_ID_CURR",inplace=True)
-    #return(df_api.loc[str(sk_id)])
+def score(sk_id) :
+    g=requests.get("https://projet7o.herokuapp.com/" + "score/?SK_ID_CURR=" + str(sk_id))
+    resultat =json.loads(g.content)
+    df_api = pd.DataFrame(resultat.items()).set_index(0).T
+    df_api.set_index("SK_ID_CURR",inplace=True)
+    return(df_api.loc[str(sk_id)])
 
 
 
@@ -80,8 +80,8 @@ with c2:
     st.write("Scoring")
     fig = go.Figure(go.Indicator(
         domain={'x': [0, 1], 'y': [0, 1]},
-        value= int(np.rint(df3[df3["SK_ID_CURR"]==Clients]['Score'])),
-        #value=float(score(Clients)),
+        #value= int(np.rint(df3[df3["SK_ID_CURR"]==Clients]['Score'])),
+        value=float(score(Clients)),
         mode="gauge+number+delta",
         title={'text': f"Score du client {Clients}"},
         delta={'reference': 100*(1-seuil) },
@@ -139,7 +139,7 @@ check1=st.sidebar.checkbox("Boxplot des features")
 if check1:
     options = st.selectbox(
              'Choisissez votre feature',
-             list(df10.columns))
+             list(df10.columns),key="histogramme")
 
     figure = px.box(df10,y=options)
     st.plotly_chart(figure,use_container_width=True)
@@ -149,7 +149,7 @@ check2=st.sidebar.checkbox("Histogramme des features")
 if check2:
     options1 = st.selectbox(
         'Choisissez votre feature',
-        list(df10.columns))
+        list(df10.columns),key="boxplot")
 
     figure1 = px.histogram(df10,x=options1,nbins=25)
     st.plotly_chart(figure1,use_container_width=True)
@@ -163,7 +163,7 @@ if check3:
     options3 = st.selectbox(
         'Choisissez votre feature',
         list(df10[["Ancienneté dans emploi", "Montant_crédit",
-                   "Age", "Annuités", "Montant_bien", "Total des Revenus"]].columns))
+                   "Age", "Annuités", "Montant_bien", "Total des Revenus"]].columns),key="analyse bivariée")
 
     figure2 = px.scatter(df10, x=options2 , y= options3 )
     st.plotly_chart(figure2,theme="streamlit", use_container_width=True)

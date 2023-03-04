@@ -22,7 +22,7 @@ st.markdown(" :money_with_wings: ",
 
 
 def score(sk_id):
-    g = requests.get("https://projet7o.herokuapp.com/" +
+    g = requests.get("https://projet7ocapi.herokuapp.com/" +
                      "score/?SK_ID_CURR=" + str(sk_id))
     resultat = json.loads(g.content)
     df_api = pd.DataFrame(resultat.items()).set_index(0).T
@@ -38,7 +38,7 @@ def load_data():
 
 df = load_data()
 
-modele = load(r"modele.joblib")
+modele = load(r"mod.joblib")
 
 
 feature_importances = modele.feature_importances_

@@ -169,28 +169,30 @@ if check3:
     st.plotly_chart(figure2, theme="streamlit", use_container_width=True)
 
 figure4 = px.bar(feat_att_1, x='valeur', y="attributes")
+figure4.update_layout(title_text='Features importances au niveau globale', title_x=0.5)
 
 figure3 = px.pie(df3, names="Décision")
+figure3.update_layout(title="Répartition des classes", title_x=0.5)
 
 
-#lime2 = LimeTabularExplainer(df.set_index("SK_ID_CURR"),
-                             #feature_names=df.set_index("SK_ID_CURR").columns,
-                             #class_names=["Solvable", "Non Solvable"],
-                             #discretize_continuous=False)
+# lime2 = LimeTabularExplainer(df.set_index("SK_ID_CURR"),
+# feature_names=df.set_index("SK_ID_CURR").columns,
+#class_names=["Solvable", "Non Solvable"],
+# discretize_continuous=False)
 
 
-#exp1 = lime2.explain_instance(df.set_index("SK_ID_CURR").loc[Clients],
-                              #modele.predict_proba,
-                              #num_samples=100)
+# exp1 = lime2.explain_instance(df.set_index("SK_ID_CURR").loc[Clients],
+# modele.predict_proba,
+# num_samples=100)
 
-train_data = shap.sample(df.set_index("SK_ID_CURR"),random_state=0)
+train_data = shap.sample(df.set_index("SK_ID_CURR"), random_state=0)
 
 explainer = shap.KernelExplainer(modele.predict_proba, train_data)
 
-fig = plt.figure(figsize=(6,9))
-plt.title(f"Features importances pour le client {Clients}",size=20)
+fig = plt.figure(figsize=(6.2, 12))
+plt.title(f"Explication locale pour la classe solvable du client {Clients}", size=20,fontweight="bold")
 fig = shap.bar_plot(explainer.shap_values(df.set_index("SK_ID_CURR").loc[Clients], l1_reg="aic")[0],
-                        feature_names=df.set_index("SK_ID_CURR").columns, max_display=10)
+                    feature_names=df.set_index("SK_ID_CURR").columns, max_display=10)
 
 col_1, col_2, col_3 = st.columns(3)
 
@@ -200,7 +202,7 @@ with col_1:
 with col_2:
     st.plotly_chart(figure4, use_container_width=True)
 
-#with col_3:
+# with col_3:
     #html = exp1.as_html(show_table=True)
     #components.html(html, height=1000)
 with col_3:

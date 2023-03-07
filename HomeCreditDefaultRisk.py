@@ -169,10 +169,10 @@ if check3:
     st.plotly_chart(figure2, theme="streamlit", use_container_width=True)
 
 figure4 = px.bar(feat_att_1, x='valeur', y="attributes")
-figure4.update_layout(title_text='Features importances au niveau globale', title_x=0.5)
+figure4.update_layout(title_text='Features importances au niveau globale')
 
 figure3 = px.pie(df3, names="Décision")
-figure3.update_layout(title="Répartition des classes", title_x=0.5)
+figure3.update_layout(title="Répartition des classes")
 
 
 # lime2 = LimeTabularExplainer(df.set_index("SK_ID_CURR"),

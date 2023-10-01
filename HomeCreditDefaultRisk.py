@@ -22,7 +22,7 @@ st.markdown(" :money_with_wings: ",
 
 
 def score(sk_id):
-    g = requests.get("https://projet7ocapi.herokuapp.com/" +
+    g = requests.get("https://projet7oc-c91a74157d0a.herokuapp.com/" +
                      "score/?SK_ID_CURR=" + str(sk_id))
     resultat = json.loads(g.content)
     df_api = pd.DataFrame(resultat.items()).set_index(0).T
